@@ -1,21 +1,18 @@
-function [k] = multigeo(A, toll)
-    % PRE: A is a square real or complex matrix, toll is a positive real scalar
-    % POST: k is the rank of the matrix A
+function [k] = multigeo(A, l, toll)
+    % PRE: A è una matrice quadrata reale o complessa
+    %      l è uno scalare complesso (autovalore)
+    %      toll è un valore di tolleranza positivo
+    % POST: k è la dimensione dell'autospazio associato all'autovalore l
 
-    if size(A, 1) ~= size(A, 2)
-        error("Matrix must be square");
+    % Controllo che A sia quadrata
+    [n, m] = size(A);
+    if n ~= m
+        error("La matrice A deve essere quadrata.");
     end
 
-    
-    [L, U, P] = lu(A);
+    % Calcolo della LU di (A - l*I)
+    [~, U, ~] = lu(A - l * eye(n)); %uso ~ per variabili inutilizzate
 
-    rank = 0;
-
-    for i = 1:size(U, 1)
-        if abs(U(i, i)) > toll
-            rank = rank + 1;
-        end
-    end
-
-    k = rank;
+    % Conta gli elementi diagonali di U che sono in modulo < toll
+    k = sum(abs(diag(U)) < toll);
 end
