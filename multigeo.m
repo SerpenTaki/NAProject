@@ -14,5 +14,12 @@ function [k] = multigeo(A, l, toll)
     [~, U, ~] = lu(A - l * eye(n)); %uso ~ per variabili inutilizzate
 
     % Conta gli elementi diagonali di U che sono in modulo < toll
-    k = sum(abs(diag(U)) < toll);
+    rank = 0;
+    for i =1:n
+        if abs(U(i,i)) > toll
+            rank = rank + 1;
+        end
+    end
+
+    k = n-rank;
 end
