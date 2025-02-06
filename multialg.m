@@ -2,7 +2,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     % Calcola la molteplicità algebrica di un autovalore di A
     
     % Passi iniziali del metodo di Newton
-    z = l0;
+    z = lO;
     for i = 1:it
         [f, g] = myobjective(z, A);
         if abs(f) < toll
@@ -20,7 +20,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     m = round(log(abs(f2 / f1)) / log(abs(g2 / g1)));
     
     % Metodo di Newton modificato
-    z = l0;
+    z = lO;
     calls = 0;
     for i = 1:maxit
         [f, g] = myobjective(z, A);
