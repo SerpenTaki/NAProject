@@ -20,15 +20,15 @@ it = 5;
 maxit = 50;
     
 % Test multgeo
-k = multigeo(A, lO, toll);
-fprintf('Molteplicità geometrica di %f: %d\n', lO, k);
+k = multigeo(A, l0, toll);
+fprintf('Molteplicità geometrica di %f: %d\n', l0, k);
     
 % Test myobjective
-[f, g] = myobjective(lO, A);
-fprintf('f(%f) = %f, g(%f) = %f\n', lO, f, lO, g);
+[f, g] = myobjective(l0, A);
+fprintf('f(%f) = %f, g(%f) = %f\n', l0, f, l0, g);
     
 % Test multalg
-[l, m, flag] = multialg(A, lO, toll, it, maxit);
+[l, m, flag] = multialg(A, l0, toll, it, maxit);
 if flag
     fprintf('Autovalore calcolato: %f con molteplicità %d\n', l, m);
 else

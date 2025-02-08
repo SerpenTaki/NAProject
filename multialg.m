@@ -39,7 +39,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     % Tentativo di incremento di m se il criterio non è soddisfatto
     while calls < 10 * maxit
         m = m + 1;
-        z = l0;
+        z = lO;
         for i = 1:maxit
             [f, g] = myobjective(z, A);
             calls = calls + 1;
