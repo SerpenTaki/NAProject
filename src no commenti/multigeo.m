@@ -1,10 +1,5 @@
 function [k] = multigeo(A, l, toll)
-    
-    
-    
-    
-    
-    
+
     [n, m] = size(A);
     if n ~= m
         error("La matrice A deve essere quadrata.");

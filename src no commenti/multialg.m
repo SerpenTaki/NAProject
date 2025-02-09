@@ -1,19 +1,5 @@
 function [l,m,flag] = multialg(A,lO,toll,it,maxit)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-    
     z = lO;
     iter_values = [];
     for i = 1:it
@@ -28,17 +14,11 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
         end
         z = z - f / g;
     end
-    
-    
-    
-    
 
     [f1, g1] = myobjective(z, A);
     [f2, g2] = myobjective(z - f1 / g1, A);
 
     m = round(log(abs(f2 / f1)) / log(abs(g2 / g1))); 
-    
-    
 
     z = lO;
     calls = 0;
@@ -59,9 +39,8 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
         end
     end
     
-    
     while calls < 10 * maxit
-        m = m + 1; 
+        m = m + 1; % (x- auto)^m
         z = lO;
         for i = 1:maxit
             [f, g] = myobjective(z, A);
@@ -79,8 +58,6 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
             end
         end
     end
-    
-   
     
     l = z;
     flag = 0;
