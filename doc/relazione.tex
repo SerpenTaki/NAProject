@@ -1,0 +1,79 @@
+\documentclass[10pt]{article}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{sectsty}
+\usepackage{tikz}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+% Define font size and family for sections
+\sectionfont{\fontsize{10}{12}\selectfont\renewcommand{\familydefault}{\sfdefault}}
+\subsectionfont{\fontsize{10}{12}\selectfont\renewcommand{\familydefault}{\sfdefault}}
+\subsubsectionfont{\fontsize{10}{12}\selectfont\renewcommand{\familydefault}{\sfdefault}}
+\paragraphfont{\fontsize{10}{12}\selectfont\renewcommand{\familydefault}{\sfdefault}}
+\subparagraphfont{\fontsize{10}{12}\selectfont\renewcommand{\familydefault}{\sfdefault}}
+\renewcommand{\familydefault}{\rmdefault} % Reset default to Roman for title page
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\begin{document}
+
+% Prima pagina
+\begin{titlepage}
+    \centering
+    {\Huge \textbf{Università degli Studi di Padova} \par}
+    \vspace{1cm}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.6\textwidth]{Immagini/Logo_Università_Padova.png}
+    \end{figure}
+    \vspace{1.5cm}
+    {\LARGE \textbf{Relazione per:} \par}
+    {\Huge Progetto 2 Matlab \par}
+    \vfill
+    \textbf{Realizzata da:} \par
+    Gabriele Di Pietro, matricola 2010000 \par
+    Michele Dioli, matricola 2077629 \par
+    Riccardo Berengan, matricola 2080041 \par
+    \vspace{0.5cm}
+\end{titlepage}
+    % Change font and size for the rest of the document
+    \renewcommand{\familydefault}{\sfdefault} % Set default to sans serif
+    \fontsize{10}{12}\selectfont
+    % Pagina introduzione
+    \newpage
+    \section{Introduzione}
+    Autovalori sono la soluzione a $det(A-\lambda I) = 0$. 
+    L'autospazio è il sottospazio vettoriale costruito da tutti i autovalori $\lambda$, insieme al vettore nullo.
+    \begin{align*}
+        A &= \begin{bmatrix}
+            4 & 2 \\
+            1 & 3 \\
+        \end{bmatrix}
+    \end{align*}
+    $det(A-\lambda I) = det\begin{bmatrix}
+        4-\lambda & 2 \\
+        1 & 3-\lambda \\
+    \end{bmatrix} \iff (\lambda - 5)(\lambda-2) = 0 \iff \lambda_1 = 5 \lambda_2 = 2$
+    Molteplicità geometrica è la dimensione dell'autospazio associato ad un autovalore quindi $\abs{n - \text{rk}(A - \lambda I)}$
+    Molteplicità geometrica è la dimensione dell'autospazio associato ad un autovalore quindi $|n - rk(A - \lambda I)|$
+    \section{Calcolo}
+    \subsection{Funzione Multigeo}
+    Per il calcolo contiamo gli elementi "\textit{nulli}" (minori di una tolleranza) sulla matrice $U$ ottenuta dalla fattorizzazione $LU$. Lo si può fare perchè:
+    Una riga nulla in $U$ significa che il sistema lineare di $(A-\lambda I)x = 0$ ha soluzione libera, una riga nulla non dipende dalle altre righe della matrice, le righe nulle indicano che ci sono dipendenze lineari tra le righe.
+    Contiamo quindi gli elementi in diagonale che sono maggiori di una tolleranza, contanto così il rango della matrice, lo sottraggo alla dimensione della matrice e otteniamo la dimensione dell'autospazio del autovalore che coincide con la molteplicità geometrica.
+    \subsection{Funzione Multialg}
+    Consideriamo il polinomio con $m$ molteplicità algebrica $f(x)=(x-\lambda)^m g(x)$ e il metodo di Newton $x_{n+1}=x_n - \frac{f(x_n)}{f'(x_n)}$ per trovare le radici di $g(x)$.
+    Analizziamo la velocità di convergenza di $f(x)=(x-\lambda)^{m-1} g(x) + (x-\lambda)^m g'(x)$\\
+    $f'(x) = 0 \iff x = \lambda$, $m \geq 1$ non è subito alla radice $m(x-\lambda)^{m-1}$ è responsabile per la velocità di convergenza, quindi il metodo di Newton applicato ad una radice di molteplicità $m\geq 1$ ha una velocità linerare non più quadratica.\\
+    Abbiamo che la stima dell'errore è ridotta dipendentemente dalla molteplicità della radice $|x_{n+1}-\lambda| \approx |x_n - \lambda|^{\frac{m-1}{m}}$\\
+    $\frac{m-1}{m}$ è la velocità di convergenza\\ \textit{(Newton vicino a radici multiple $\Rightarrow |e_{n+1}| \approx C|e_n|^{\frac{m-1}{m}}$)}\\
+    Calcoliamo l'autovalore con il metodo di Newton, iteriamo fino a un numero di iterazioni e o per aver raggiunto una tolleranza sensata. Applichiamo a Newton al polinomio caratteristico $f(\lambda) = det(A-\lambda)I \Rightarrow \lambda_{n+1} = \frac{f(\lambda)}{f'(\lambda)}$ Troviamo così il valore dell'autovalore.
+    Per calcolare la molteplicità algebrica basta dividere l'autovalore per il polinomio caratteristico, e vedere quante volte lo posso fare prima di ottenere un valore di zero.
+    \section{Test}
+    
+\end{document}
