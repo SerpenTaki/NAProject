@@ -1,6 +1,6 @@
 function [f, g] = myobjective(z, A)
  %PRE: z numero complesso, A matrice reale o complessa
- % Calcola fA(z) e f'A(z) (gA(z)) utilizzando la fattorizzazione LU con pivoting parziale
+ %POST: Calcola fA(z) e f'A(z) (gA(z)) utilizzando la fattorizzazione LU con pivoting parziale
     
     % Costruisci B(z) = A - zI
     n = size(A, 1);
@@ -11,11 +11,13 @@ function [f, g] = myobjective(z, A)
     
     % Calcolo di det(P) basato sul numero di scambi di riga
     P_vec = 1:n; % Vettore degli indici
+    
     for i = 1:n
         P_vec(i) = find(P(i, :) == 1);
     end
+    
     s = sum(P_vec ~= 1:n); % Numero di scambi
-    det_P = (-1)^s;
+    det_P = (-1)^s; %Determinante positivo se numero di scambi pari, numero dispari determinate negativo
     
     % Calcolo di det(B) = det(A - zI) = det(U) / det(P)
     det_B = det_P * prod(diag(U));
