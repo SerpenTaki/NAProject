@@ -12,15 +12,18 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     %Calcola la molteplicità algebrica di un autovalore di A, con metodo di
     %Newtoon calcolando la radice del termine del polinomio caratteristico
     %dove compare l'autovale calcolato
-    
+
     % Passi iniziali del metodo di Newton
     z = lO;
+    iter_values = [];
     for i = 1:it
         [f, g] = myobjective(z, A);
+        iter_values = [iter_values, z];
         if abs(f) < toll
             l = z;
             m = 1;
             flag = 1;
+            testGrafico(iter_values);
             return;
         end
         z = z - f / g;
@@ -43,9 +46,11 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     for i = 1:maxit
         [f, g] = myobjective(z, A);
         calls = calls + 1;
+        iter_values = [iter_values, z];
         if abs(f) < toll
             l = z;
             flag = 1;
+            testGrafico(iter_values);
             return;
         end
         z = z - m * (f / g); 
@@ -55,16 +60,17 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     end
     
     % Tentativo di incremento di m se il criterio non è soddisfatto
-
     while calls < 10 * maxit
         m = m + 1; % (x- auto)^m
         z = lO;
         for i = 1:maxit
             [f, g] = myobjective(z, A);
             calls = calls + 1;
+            iter_values = [iter_values, z];
             if abs(f) < toll
                 l = z;
                 flag = 1;
+                testGrafico(iter_values);
                 return;
             end
             z = z - m * (f / g);
@@ -74,8 +80,9 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
         end
     end
     
+   
     % Se non si raggiunge la convergenza
     l = z;
     flag = 0;
-
+    testGrafico(iter_values);
 end

@@ -3,20 +3,20 @@ clear all;
 close all;
 
 % Dimensione della matrice
-n = 3;
+n = 5;
     
 % Creazione di una matrice test con autovalori noti
 lambda = [2, 2, 3, 3, 3];
 J = blkdiag([2 1; 0 2], [3 1 0; 0 3 1; 0 0 3]);
 Q = orth(randn(n)); %genera una matrice ortogonale Q di dim nxn
-%A = Q' * J * Q;
+A = Q' * J * Q;
     
 % Autovalore target
-lO = 3;
+lO = 1;
 
 %test manuale
 
-A = [5,4,2; 0,3,-1; 0,0,3]; %Diagonalizzabile auto= 5, 3 
+%A = [5,4,2; 0,3,-1; 0,0,3]; %Diagonalizzabile auto= 5, 3 
 %A = [4,1,0; 0,4,1; 0,0,4]; % Non diagonalizzabile auto 4
 
 % geo <= alg -> diagonlizzabile 
