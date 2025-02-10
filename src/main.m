@@ -12,7 +12,7 @@ Q = orth(randn(n)); %genera una matrice ortogonale Q di dim nxn
 A = Q' * J * Q;
     
 % Autovalore target
-lO = 1;
+lO = 6;
 
 %test manuale
 
@@ -23,8 +23,8 @@ lO = 1;
     
 % Parametri
 toll = 1e-6;
-it = 4;
-maxit = 50;
+it = 5;
+maxit = 5000;
     
 % Test multgeo
 k = multigeo(A, lO, toll);

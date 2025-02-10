@@ -29,6 +29,6 @@ function [f, g] = myobjective(z, A)
     B_inv = U \ (L \ P); % Equivalente a inv(B)
     
     % Calcolo di gA(z)
-    g = 1/trace(B_inv); %la funzione trace calcola la somma degli elementi diagonali di una matrice
-    %g = 1/trace(A-z*eye(n));
+    %g = 1/trace(B_inv); %la funzione trace calcola la somma degli elementi diagonali di una matrice
+    g 
 end

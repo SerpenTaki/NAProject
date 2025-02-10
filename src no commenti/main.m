@@ -12,7 +12,7 @@ n = length(lambda);
 Q = orth(randn(n)); 
 A = Q' * J * Q;
     
-lO = 1;
+lO = 2;
 
 toll = 1e-6;
 it = 4;
