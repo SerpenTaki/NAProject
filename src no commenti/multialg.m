@@ -1,5 +1,5 @@
 function [l,m,flag] = multialg(A,lO,toll,it,maxit)
-
+    
     z = lO;
     iter_values = [];
     for i = 1:it
@@ -10,6 +10,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
             m = 1;
             flag = 1;
             testGrafico(iter_values);
+            m = calcola_molteplicita(poly(A),l);
             return;
         end
         z = z - f / g;
@@ -31,6 +32,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
             l = z;
             flag = 1;
             testGrafico(iter_values);
+            m = calcola_molteplicita(poly(A),l);
             return;
         end
         z = z - m * (f / g); 
@@ -50,6 +52,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
                 l = z;
                 flag = 1;
                 testGrafico(iter_values);
+                m = calcola_molteplicita(poly(A),l);
                 return;
             end
             z = z - m * (f / g);
@@ -62,4 +65,5 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     l = z;
     flag = 0;
     testGrafico(iter_values);
+    
 end

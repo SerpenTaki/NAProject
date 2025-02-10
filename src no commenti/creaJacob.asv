@@ -1,0 +1,11 @@
+function J = creaJacob(v)
+
+    J = zeros(size(v,1));
+    J = J + diag(v);
+
+    for i = 1 : size(v,1)
+        
+    end
+
+
+end
