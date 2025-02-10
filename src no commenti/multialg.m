@@ -63,6 +63,7 @@ function [l,m,flag] = multialg(A,lO,toll,it,maxit)
     end
     
     l = z;
+    m = l;
     flag = 0;
     testGrafico(iter_values);
     

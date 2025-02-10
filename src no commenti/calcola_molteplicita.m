@@ -1,15 +1,13 @@
 function molteALG = calcola_molteplicita(p, lambda)
 
-    remainder = p;
+    resto = p;
 
     molteALG = 0;
     while true
-       
-        [quotient, remainder] = deconv(remainder, [1, -lambda]);
-
-        if norm(remainder, Inf) < 1e-12  
+        [quoziente, resto] = deconv(resto, [1, -lambda]);
+        if norm(resto, Inf) < 0.9999999
             molteALG = molteALG + 1;
-            remainder = quotient; 
+            resto = quoziente; 
         else
             break;
         end

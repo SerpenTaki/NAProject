@@ -1,0 +1,12 @@
+function molteALG = calcola_molteplicita(A,l)
+
+    resto = A; 
+    molteALG = 1; 
+
+    while abs(resto) > 1e-6
+        resto = resto / l; 
+        molteALG = molteALG + 1;
+    end
+    
+end
+
