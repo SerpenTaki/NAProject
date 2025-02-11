@@ -1,46 +1,34 @@
 clc;
-clear all;
+clear;
 close all;
 
-% Dimensione della matrice
-
-lambda = [1,1,1,2,5,5,5,2,2];
-
+% Definizione di una matrice di test
+% Ad esempio, consideriamo una matrice 3x3 con autovalore ripetuto (defect)
+%A = [4 1 0; 0 4 1; 0 0 4];
+lambda = [1,1,1,4,4,4,5,4];
 J = creaJacob(lambda);
 n = length(lambda);
-
 disp(J);
 Q = orth(randn(n)); %genera una matrice ortogonale Q di dim nxn
 A = Q' * J * Q;
-    
-% Autovalore target
-lO = 2;
+% Punto iniziale per il metodo di Newton
+lO = 3.8;  % inizialmente vicino all'autovalore 4
 
-%test manuale
+% Parametri per il metodo
+toll = 1e-9;
+it = 3;
+maxit = 5;
 
-%A = [5,4,2; 0,3,-1; 0,0,3]; %Diagonalizzabile auto= 5, 3 
-%A = [4,1,0; 0,4,1; 0,0,4]; % Non diagonalizzabile auto 4
+% Chiamata al metodo multialg che restituisce anche il vettore degli step
+[l, m, flag, steps] = multialg(A, lO, toll, it, maxit);
 
-% geo <= alg -> diagonlizzabile 
-    
-% Parametri
-toll = 1e-6;
-it = 2;
-maxit = 50;
-    
-% Test multgeo
-k = multigeo(A, lO, toll);
-fprintf('Molteplicità geometrica di %f: %d\n', lO, k);
-    
-lO = 1.8; 
-% Test myobjective
-[f, g] = myobjective(lO, A);
-fprintf('f(%f) = %f, g(%f) = %f\n', lO, f, lO, g);
-    
-% Test multalg
-[l, m, flag] = multialg(A, lO, toll, it, maxit);
-if flag
-    fprintf('Autovalore calcolato: %f con molteplicità A %d\n', l, m);
+% Visualizzazione dei risultati
+if flag == 1
+    fprintf('Newton convergente.\nAutovalore calcolato: %f\nMolteplicità algebrica stimata: %d\n', l, m);
 else
-    fprintf('Autovalore calcolato: %f con molteplicità A %d\n', l, m);
+    fprintf('Metodo non convergente.\nUltimo autovalore calcolato: %f\nMolteplicità algebrica stimata: %d\n', l, m);
 end
+
+% Stampa di tutti gli s_k (Newton steps)
+fprintf('\nTutti i passi di Newton (s_k):\n');
+disp(steps);
