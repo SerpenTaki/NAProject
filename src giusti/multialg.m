@@ -1,4 +1,4 @@
-function [l, m, flag, steps] = multialg(A, lO, toll, it, maxit)
+function [l, m, flag] = multialg(A, lO, toll, it, maxit)
 % MULTIALG Calcola un autovalore di A e la sua molteplicità algebrica.
 %
 %   [l, m, flag, steps] = multialg(A, lO, toll, it, maxit)
@@ -36,7 +36,7 @@ for i = 1:it
     
     % Calcolo del passo di Newton; in questo esempio usiamo g direttamente
     s = g;                    
-    steps = [steps, s];        % Memorizza lo step corrente
+    %steps = [steps, s];        % Memorizza lo step corrente
     
     % Aggiornamento delle variabili per gli ultimi due step
     if i == 1
@@ -62,39 +62,56 @@ end
 % contengono rispettivamente il penultimo e l'ultimo passo calcolato.
 fprintf('Penultimo step: %e\n', penultimate_step);
 fprintf('Ultimo step: %e\n', last_step);
-l=z;
 maxit = 50;
-m = abs(penultimate_step / (penultimate_step-last_step));
+m = abs(penultimate_step / (penultimate_step - last_step));
 m = round(m);
-flag =0;
+l=z;
+flag=0;
+
 % Stima di m tramite Newton (risolviamo (1-1/m)^m = ratio)
+
+% --- Punto 3: Newton modificato ---
+totalCalls = 0;
+%converged = false;
+% Iniziamo con il valore m stimato e ripartiamo da lO
+m_modified = m;
+converged = false;
+while totalCalls < 10 * maxit
     z = lO;
-    calls = 0;
-
-
-
-while calls < maxit
-    m = m + 1; % Incrementa m di un'unità
-    z = lO;
-    for i = 1:maxit
+  % riparto da lO per ogni nuovo tentativo con m_modified
+    for j = 1:maxit
         [f, g] = myobjective(z, A);
-        calls = calls + 1;
+        totalCalls = totalCalls + 1;
         iter_values = [iter_values, z];
-        if abs(f) < toll
-            l = z;
-            flag = 1;
-            m = calcola_molteplicita(poly(A), l);
-            return;
+        s = m_modified * g;  % passo modificato
+        steps = [steps, s];
+        if j>=2 && j<maxit-1
+            a = steps(j-1);
+            b = steps(j);
+            if (a-b) < toll
+                fprintf("caccolone");
+                converged = true;
+                flag=1;
+                l = z;
+                m = m_modified;
+                return;
+            end
         end
-        z = z - m * (f / g);
-        if calls >= maxit
-            flag = 0;
+        
+        z = z - s;
+        
+        if totalCalls >= 10 * maxit
+            break;
+        end
+        if s == 0;
             return;
         end
     end
+    if converged == false
+        % Se non converge entro maxit passi con l'attuale m, incrementa m di 1 e ripeti.
+        m_modified = m_modified + 1;
+    end
 end
-
-l = z;
-flag = 0;
-
+  % restituisco il valore finale di m
+testGrafico(iter_values);
 end
