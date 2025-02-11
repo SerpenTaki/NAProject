@@ -3,16 +3,18 @@ clear all;
 close all;
 
 % Dimensione della matrice
-n = 5;
-    
-% Creazione di una matrice test con autovalori noti
-lambda = [2, 2, 3, 3, 3];
-J = blkdiag([2 1; 0 2], [3 1 0; 0 3 1; 0 0 3]);
+
+lambda = [1,1,1,2,5,5,5,2,2];
+
+J = creaJacob(lambda);
+n = length(lambda);
+
+disp(J);
 Q = orth(randn(n)); %genera una matrice ortogonale Q di dim nxn
 A = Q' * J * Q;
     
 % Autovalore target
-lO = 6;
+lO = 2;
 
 %test manuale
 
@@ -23,13 +25,14 @@ lO = 6;
     
 % Parametri
 toll = 1e-6;
-it = 5;
-maxit = 5000;
+it = 2;
+maxit = 50;
     
 % Test multgeo
 k = multigeo(A, lO, toll);
 fprintf('Molteplicità geometrica di %f: %d\n', lO, k);
     
+lO = 1.8; 
 % Test myobjective
 [f, g] = myobjective(lO, A);
 fprintf('f(%f) = %f, g(%f) = %f\n', lO, f, lO, g);
@@ -39,5 +42,5 @@ fprintf('f(%f) = %f, g(%f) = %f\n', lO, f, lO, g);
 if flag
     fprintf('Autovalore calcolato: %f con molteplicità A %d\n', l, m);
 else
-    fprintf('Errore nel calcolo dell''autovalore.\n');
+    fprintf('Autovalore calcolato: %f con molteplicità A %d\n', l, m);
 end
