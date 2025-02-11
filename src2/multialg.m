@@ -68,4 +68,33 @@ m = abs(penultimate_step / (penultimate_step-last_step));
 m = round(m);
 flag =0;
 % Stima di m tramite Newton (risolviamo (1-1/m)^m = ratio)
+    z = lO;
+    calls = 0;
+
+
+
+while calls < maxit
+    m = m + 1; % Incrementa m di un'unità
+    z = lO;
+    for i = 1:maxit
+        [f, g] = myobjective(z, A);
+        calls = calls + 1;
+        iter_values = [iter_values, z];
+        if abs(f) < toll
+            l = z;
+            flag = 1;
+            m = calcola_molteplicita(poly(A), l);
+            return;
+        end
+        z = z - m * (f / g);
+        if calls >= maxit
+            flag = 0;
+            return;
+        end
+    end
+end
+
+l = z;
+flag = 0;
+
 end

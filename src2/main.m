@@ -5,19 +5,19 @@ close all;
 % Definizione di una matrice di test
 % Ad esempio, consideriamo una matrice 3x3 con autovalore ripetuto (defect)
 %A = [4 1 0; 0 4 1; 0 0 4];
-lambda = [1,1,1,4,4,4,5,6];
+lambda = [1,1,1,4,4,4,5];
 J = creaJacob(lambda);
 n = length(lambda);
 disp(J);
 Q = orth(randn(n)); %genera una matrice ortogonale Q di dim nxn
 A = Q' * J * Q;
 % Punto iniziale per il metodo di Newton
-lO = 3;  % inizialmente vicino all'autovalore 4
+lO = 3.9;  % inizialmente vicino all'autovalore 4
 
 % Parametri per il metodo
 toll = 1e-9;
 it = 2;
-maxit = 50;
+maxit = ;
 
 % Chiamata al metodo multialg che restituisce anche il vettore degli step
 [l, m, flag, steps] = multialg(A, lO, toll, it, maxit);
