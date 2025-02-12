@@ -89,7 +89,6 @@ while totalCalls < 10 * maxit
             a = steps(j-1);
             b = steps(j);
             if (a-b) < toll
-                fprintf("caccolone");
                 converged = true;
                 flag=1;
                 l = z;
