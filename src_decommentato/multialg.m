@@ -20,7 +20,6 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
             l = z;
             m = 1;
             flag = 1;
-            testGrafico(iter_values);
             return;
         end
         z = z - s;
@@ -71,6 +70,4 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
             m_modified = m_modified + 1;
         end
     end
-
-    testGrafico(iter_values);
-    end
+end
