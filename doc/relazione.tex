@@ -36,9 +36,9 @@
     {\Huge Progetto 2 Matlab \par}
     \vfill
     \textbf{Realizzata da:} \par
-    Gabriele Di Pietro, matricola 2010000 \par
-    Michele Dioli, matricola 2077629 \par
     Riccardo Berengan, matricola 2080041 \par
+    Michele Dioli, matricola 2077629 \par
+    Gabriele Di Pietro, matricola 2010000 \par
     \vspace{0.5cm}
 \end{titlepage}
     % Change font and size for the rest of the document
@@ -86,6 +86,102 @@
     \subsection{File \texttt{main.m}}
     Il main permette di definire una matrice di test tramite la modifica del vettore \texttt{lambda} e  di modificare il punto iniziale per il metodo di newton \texttt{lO} e il parametro della tolleranza \texttt{toll}.\\
     La matrice per i test viene creata tramite la modifica del parametro \texttt{lambda} da qui viene invocata una funzione \texttt{creaJacob} che prende in input \texttt{lambda} e restituisce la matrice in forma diagonale a blocchi di Jordan, poi viene creata una matrice $Q$ tramite \texttt{Q = orth(randn(n))} che genera una matrice ortogonale, ed infine viene calcolata la matrice $A$ usando la struttura $A=Q^tJQ$\\
-    \subsubsection{Test 1}
-    
+    \subsubsection{Test 1 Matrice clusterizzata con molteplicità elevata}
+    Effettuiamo 2 piccoli test cambiando solo il valore del punto iniziale del metodo di newton.
+    \begin{verbatim}
+        %% Test 1 alta molteplicità 
+        lambda = [1,1,1,4,1,1,5,1,1,4,5,4];
+        lO = 3.9;
+        toll = 1e-5; %il metodo converge
+
+        %% Test 2 bassa molteplicità
+        lambda = [1,1,1,4,1,1,5,1,1,4,5,4];
+        lO = 3.9;
+        toll = 1e-5; %il metodo converge
+    \end{verbatim}
+    \subsubsection{Test 2 Matrice clusterizzata con valori molto vicini}
+    \begin{verbatim}
+        %% Test 1 clusterizzata con valori molto vicini
+        lambda =[1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003];
+        lO = 10.1;
+        toll = 1e-9; %il metodo converge
+
+        %% Test 2 con la stessa matrice cambio solo il punto iniziale
+        lO= 1.0125;
+        %In questo caso il metodo di Newton non converge
+    \end{verbatim}
+    \subsubsection{Test 3 Matrice con molteplicità bassa (1-2)}
+    \begin{verbatim}
+        %% Prendiamo una matrice di esempio: lambda = [1,1,1,4,5,6];
+        % Ad ogni iterazione del test proveremo ad aumentare la molteplicità
+        % aggiungendo un autovalore (ad esempio 4) a lambda
+        %Definiamo
+        lO = 3.9;
+        toll = 1e-5;
+        %% Test 1 molteplicità 1
+        lambda = [1,1,1,4,5,6]; %il metodo converge per lO = 3.9
+        %% Proviamo quindi ad diminuire lO portandolo a 3.5
+        lO = 3.5; %in questo caso la molteplicità algebrica è uguale a 0
+                    % e il metodo non converge;
+
+        %% Test 2 molteplicità 2
+        lambda = [1,1,1,4,5,6,4]; %il metodo converge per lO = 3.9
+        %% Proviamo quindi ad diminuire lO portandolo a 3.5
+        lO = 3.5; %in questo caso la molteplicità algebrica è uguale a 1
+                    % e il metodo non converge;
+    \end{verbatim}
+    \subsubsection{Test 4 Matrice con molteplicità alta (3-7)}
+    \begin{verbatim}
+        %% Effettuiamo un test simile al precedente prendendo come base
+        lambda = [1,1,1,4,5,6,4,4];
+        toll = 1e-5;
+        %% Test 1 molteplicità 3
+        lO = 3.5; % Il metodo converge ma la molteplicità algebrica è 2
+        % Riduciamo la tolleranza toll = 1e-9 e lO = 3.7
+        lO = 3.7;
+        toll = 1e-9; %Il metodo converge e la molteplicità algebrica è 3
+        
+
+
+        %% Test 2 molteplicità 4
+        % resettiamo i valori di base e aggiungiamo un autovalore (4)
+        % alla fine di lambda
+        lambda = [1,1,1,4,5,6,4,4,4];
+        lO = 3.5; % Il metodo converge ma la molteplicità algebrica è 3
+                    % da qui quindi senza modificare la tollerenza
+        % Aumentiamo il punto di partenza
+        lO = 3.7; % Il metodo converge e la molteplicità algebrica è 4
+
+        %% Test 3 molteplicità 5
+        % aggiungiamo un autovalore (4) alla fine di lambda e partiamo
+        % da lO = 3.7
+        lambda = [1,1,1,4,5,6,4,4,4,4];
+        lO = 3.7; % Il metodo converge e la molteplicità algebrica è 5
+        % Abbassiamo il punto di partenza a 3.5
+        lO = 3.5; % Il metodo converge e la molteplicità trovata è giusta
+        % Abbassiamo il punto di partenza a 3.3
+        lO = 3.3; % Il metodo converge ma la molteplicità trovata è 4
+
+        %% Test 4 molteplicità 6
+        % aggiungiamo un autovalore (4) alla fine di lambda
+        lambda = [1,1,1,4,5,6,4,4,4,4,4];
+        lO = 3.7; % Il metodo converge e la molteplicità algebrica è 6
+        % Abbassiamo il punto di partenza a 3.6
+        lO = 3.6; % Il metodo converge e la molteplicità algebrica è 6
+        % Abbassiamo il punto di partenza a 3.53
+        lO = 3.51; % Anche in questo caso converge e la molteplicità algebrica è 6
+        % Riportiamo l0 a 3.5
+        lO = 3.5; % Il metodo converge e la molteplicità trovata è giusta
+        % Abbassiamo il punto di partenza a 3.4
+        lO = 3.4; % Il metodo converge ma la molteplicità trovata è 5
+        
+        %% Test 5 molteplicità 7
+        % aggiungiamo un autovalore (4) alla fine di lambda
+        lambda = [1,1,1,4,5,6,4,4,4,4,4,4];
+        lO = 3.5; % Il metodo converge e la molteplicità algebrica è 7
+    \end{verbatim}
+    \newpage
+    \section{Conclusioni}
+    Possiamo concludere che il software prodotto gestisce bene il problema e può trovare autovalori anche con stime iniziali lontani, infatti il metodo di Newton converge anche con stime iniziali molto distanti (\textit{ad esempio}, \texttt{lO}$= 3.5$ per $\lambda = 4$). \\ 
+    Il software è stato testato con matrici di varie dimensioni e con molteplicità algebriche e geometriche diverse, e in tutti i casi il metodo di Newton converge, a meno che non si scelga un punto iniziale molto distante dall'autovalore da trovare\\
 \end{document}

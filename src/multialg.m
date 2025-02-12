@@ -51,7 +51,6 @@ for i = 1:it
         l = z;
         m = 1;
         flag = 1;
-        testGrafico(iter_values);
         return;
     end
     % Aggiornamento di Newton: z = z - s
@@ -112,5 +111,4 @@ while totalCalls < 10 * maxit
     end
 end
   % restituisco il valore finale di m
-testGrafico(iter_values);
 end
