@@ -51,6 +51,7 @@ for i = 1:it
         l = z;
         m = 1;
         flag = 1;
+        testGrafico(iter_values); % Richiama la funzione per il grafico
         return;
     end
     % Aggiornamento di Newton: z = z - s
@@ -61,7 +62,7 @@ fprintf('Penultimo step: %e\n', penultimate_step);
 fprintf('Ultimo step: %e\n', last_step);
 m = abs(penultimate_step / (penultimate_step - last_step));
 m = round(m);
-fprintf('ultimo m ->%f',m);
+fprintf('ultimo m ->%f\n',m);
 flag=0;
 l = z;
 
@@ -87,16 +88,30 @@ while totalCalls < 10 * maxit
                 flag=1;
                 l = z;
                 m = m_modified;
+                testGrafico(iter_values); % Richiama la funzione per il grafico
                 return;
             end
         end
         if s == 0
+            testGrafico(iter_values); % Richiama la funzione per il grafico
             return;
         end
     end
 m_modified = m_modified +1;
   end
+  totalCalls = totalCalls + 1;
 end
 flag = 0;
+testGrafico(iter_values); % Richiama la funzione per il grafico
   % restituisco il valore finale di m
+end
+
+function [] = testGrafico(values)
+    figure;
+    semilogy(1:length(values), values, "-o", "LineWidth", 1.5, "MarkerSize", 6);
+    xlabel("Numero di Iterazioni");
+    ylabel("Valore di z");
+    title("Convergenza del Metodo di Newton");
+    grid on;
+
 end
