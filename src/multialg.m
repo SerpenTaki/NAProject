@@ -29,7 +29,7 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
     
     % --- Fase 1: Newton classico ---
     % Forza un numero minimo di iterazioni (almeno 10) prima di verificare il criterio
-    min_iter = max(10, it);
+    min_iter = min(10, it);
     for i = 1:it
         [f, g] = myobjective(z, A);  % qui g = f(z)/f'(z)
         iter_values = [iter_values, z];
@@ -62,7 +62,6 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
     % contengono rispettivamente il penultimo e l'ultimo passo calcolato.
     fprintf('Penultimo step: %e\n', penultimate_step);
     fprintf('Ultimo step: %e\n', last_step);
-    maxit = 50;
     m = abs(penultimate_step / (penultimate_step - last_step));
     m = round(m);
     l=z;

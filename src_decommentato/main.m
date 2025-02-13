@@ -15,7 +15,7 @@ lO = input('Inserisci il valore iniziale lO (es. 3.53): ');
 
 toll = input('Inserisci il valore di tolleranza toll (es. 1e-5): ');
 it = 2;
-maxit = 5;
+maxit = 15;
 
 [l, m, flag] = multialg(A, lO, toll, it, maxit)
 
