@@ -19,7 +19,7 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
 % Il metodo lavora in due fasi:
 % 1. Newton classico per ottenere un'approssimazione iniziale.
 % 2. Se l'approssimazione non soddisfa il criterio, stima la molteplicità m 
-%    mediante il rapporto |f(z - g)|/|f(z)| (con g = f/f') e prosegue con
+%    mediante il rapporto m =|sk|/|sk|-|sk+1|  (con sk k-esimo passo di Newton) e prosegue con
 %    Newton modificato.
 
 % Inizializzazione
@@ -29,14 +29,14 @@ steps = []; % vettore per memorizzare tutti gli step di Newton
 
 % --- Fase 1: Newton classico ---
 % Forza un numero minimo di iterazioni (almeno 10) prima di verificare il criterio
-min_iter = max(10, it);
+min_iter = min(10, it);
 for i = 1:it
     [f, g] = myobjective(z, A);  % qui g = f(z)/f'(z)
     iter_values = [iter_values, z];
     
     % Calcolo del passo di Newton; in questo esempio usiamo g direttamente
     s = g;                    
-    %steps = [steps, s];        % Memorizza lo step corrente
+    %steps = [steps, s];        Memorizza lo step corrente
     
     % Aggiornamento delle variabili per gli ultimi due step
     if i == 1
@@ -57,58 +57,46 @@ for i = 1:it
     z = z - s;
 end
 
-% Al termine del ciclo, le variabili 'penultimate_step' e 'last_step'
-% contengono rispettivamente il penultimo e l'ultimo passo calcolato.
 fprintf('Penultimo step: %e\n', penultimate_step);
 fprintf('Ultimo step: %e\n', last_step);
-maxit = 50;
 m = abs(penultimate_step / (penultimate_step - last_step));
 m = round(m);
-l=z;
+fprintf('ultimo m ->%f',m);
 flag=0;
-
-% Stima di m tramite Newton (risolviamo (1-1/m)^m = ratio)
+l = z;
 
 % --- Punto 3: Newton modificato ---
 totalCalls = 0;
-%converged = false;
 % Iniziamo con il valore m stimato e ripartiamo da lO
+z = lO;
 m_modified = m;
-converged = false;
-while totalCalls < 10 * maxit
-    z = lO;
+while totalCalls < 10 * maxit 
   % riparto da lO per ogni nuovo tentativo con m_modified
-    for j = 1:maxit
+  if abs(f) < toll
+    for j = 1:maxit 
+        s = m_modified * g;  % passo modificato
+        z = z - s;
         [f, g] = myobjective(z, A);
         totalCalls = totalCalls + 1;
         iter_values = [iter_values, z];
-        s = m_modified * g;  % passo modificato
         steps = [steps, s];
         if j>=2 && j<maxit-1
             a = steps(j-1);
             b = steps(j);
-            if (a-b) < toll
-                converged = true;
+            if abs(a-b) < toll
                 flag=1;
                 l = z;
                 m = m_modified;
                 return;
             end
         end
-        
-        z = z - s;
-        
-        if totalCalls >= 10 * maxit
-            break;
-        end
-        if s == 0;
+        if s == 0
             return;
         end
     end
-    if converged == false
-        % Se non converge entro maxit passi con l'attuale m, incrementa m di 1 e ripeti.
-        m_modified = m_modified + 1;
-    end
+m_modified = m_modified +1;
+  end
 end
+flag = 0;
   % restituisco il valore finale di m
 end
