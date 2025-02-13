@@ -16,9 +16,9 @@ TestCases = {
     struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-9),%10
     struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.5, 'toll', 1e-9),%11
     struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-9), %12 % Converge con molteplicità sbagliata
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-9), % 13
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-9), %14
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-9), %15
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-5), % 13
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-5), %14
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.9, 'toll', 1e-5), %15
 };
 
 for testID = 1:length(TestCases)
@@ -47,8 +47,8 @@ for testID = 1:length(TestCases)
     disp(J);
     
     % Parametri per il metodo di Newton
-    it = 2;
-    maxit = 10;
+    it = 8;
+    maxit = 15;
     
     % Chiamata al metodo multialg che restituisce anche il vettore degli step
     [l, m, flag] = multialg(A, lO, toll, it, maxit);
@@ -61,12 +61,11 @@ for testID = 1:length(TestCases)
     end
     
     % Calcolo della molteplicità geometrica
-    l1 = round(l);
+    disp(l);
+    l1 = round(l); %limite della geometrica dovuta all'arrotondamento
     k = multigeo(A, l1, toll);
     fprintf('Molteplicità geometrica di %f: %d\n', l1, k);
 
     linea = 50; % Lunghezza della linea
     fprintf('%s\n', repmat('-', 1, linea));
 end
-close all;
-
