@@ -84,8 +84,9 @@ while totalCalls < 10 * maxit
         if j>=2 && j<maxit-1
             a = steps(j-1);
             b = steps(j);
-            if abs(a)-abs(b) < toll
+            if abs(a)-abs(b) < toll %
                 flag=1;
+                fprintf("\tTrovata tolleranza\n");
                 l = z;
                 m = m_modified;
                 testGrafico(iter_values); % Richiama la funzione per il grafico

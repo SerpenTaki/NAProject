@@ -68,5 +68,4 @@ for testID = 1:length(TestCases)
     linea = 50; % Lunghezza della linea
     fprintf('%s\n', repmat('-', 1, linea));
 end
-close all;
 
