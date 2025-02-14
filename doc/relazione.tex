@@ -86,99 +86,423 @@
     \subsection{File \texttt{main.m}}
     Il main permette di definire una matrice di test tramite la modifica del vettore \texttt{lambda} e  di modificare il punto iniziale per il metodo di newton \texttt{lO} e il parametro della tolleranza \texttt{toll}.\\
     La matrice per i test viene creata tramite la modifica del parametro \texttt{lambda} da qui viene invocata una funzione \texttt{creaJacob} che prende in input \texttt{lambda} e restituisce la matrice in forma diagonale a blocchi di Jordan, poi viene creata una matrice $Q$ tramite \texttt{Q = orth(randn(n))} che genera una matrice ortogonale, ed infine viene calcolata la matrice $A$ usando la struttura $A=Q^tJQ$\\
-    \subsubsection{Test 1 Matrice clusterizzata con molteplicità elevata}
-    Effettuiamo 2 piccoli test cambiando solo il valore del punto iniziale del metodo di newton.
+    \subsection{File \texttt{test.m}}
+    Il programma \texttt{test.m} esegue una serie di test per verificare la correttezza delle funzioni \texttt{multialg} e \texttt{multigeo}. Queste funzioni sono utilizzate per calcolare gli autovalori di una matrice e le loro rispettive molteplicità algebriche e geometriche.
+    Il programma definisce una serie di casi di test, ciascuno con una matrice di autovalori specificata dal vettore \texttt{lambda}, un punto iniziale per il metodo di Newton \texttt{lO}, e una tolleranza \texttt{toll}. Per ogni caso di test, il programma esegue i seguenti passaggi:
+    \begin{enumerate}
+        \item Stampa il numero del test e i valori di \texttt{lambda}, \texttt{lO}, e \texttt{toll}.
+        \item Crea una matrice diagonale \texttt{J} con i valori di \texttt{lambda} e aggiunge 1 agli elementi fuori diagonale per gestire le molteplicità.
+        \item Genera una matrice ortogonale \texttt{Q} e calcola la matrice \texttt{A} come \texttt{A = Q' * J * Q}.
+        \item Utilizza la funzione \texttt{multialg} per calcolare un autovalore \texttt{l} e la sua molteplicità algebrica \texttt{m}.
+        \item Se il metodo di Newton converge, calcola la molteplicità geometrica \texttt{k} dell'autovalore utilizzando la funzione \texttt{multigeo}.
+        \item Stampa i risultati del test, inclusi l'autovalore calcolato, la molteplicità algebrica e geometrica, e un messaggio di convergenza.
+    \end{enumerate}
+    Il programma fornisce un'analisi dettagliata dei risultati di ciascun test, permettendo di verificare l'accuratezza e l'efficacia delle funzioni implementate.
     \begin{verbatim}
-        %% Test 1 alta molteplicità 
-        lambda = [1,1,1,4,1,1,5,1,1,4,5,4];
-        lO = 3.9;
-        toll = 1e-5; %il metodo converge
+clc;
+clear all;
+close all;
+    
+TestCases = {
+    struct('lambda', [1,1,1,1,1,4,4,4,4,4,4,4], 'lO', 3.8, 'toll', 1e-4),%1
+    struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003],
+     'lO', 10.1, 'toll', 1e-4),%2
+    struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003],
+     'lO', 1.0125, 'toll', 1e-4),%3
+    struct('lambda', [1,1,1,4,5,6], 'lO', 3.5, 'toll', 1e-4),%4 
+    struct('lambda', [1,1,1,4,5,6], 'lO', 3.9, 'toll', 1e-4),%5
+    struct('lambda', [1,1,1,4,5,6,4], 'lO', 3.9, 'toll', 1e-4),%6
+    struct('lambda', [1,1,1,4,5,6,4,4], 'lO', 3.5, 'toll', 1e-4),%7
+    struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%8 
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.3, 'toll', 1e-4),%9 
+    struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%10
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.5, 'toll', 1e-4),%11
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 4.3, 'toll', 1e-4), %12
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-4), % 13
+    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-4), %14
+    struct('lambda', [4,4,4,4,4,4,4,4], 'lO', 0., 'toll', 1e-4), %15
+};
 
-        %% Test 2 bassa molteplicità
-        lambda = [1,1,1,4,1,1,5,1,1,4,5,4];
-        lO = 3.9;
-        toll = 1e-5; %il metodo converge
+for testID = 1:length(TestCases)
+    fprintf('\nEseguendo Test %d...\n', testID);
+    
+    lambda = TestCases{testID}.lambda;
+    fprintf('[%s]\n', sprintf('%g ', lambda));
+
+    lO = TestCases{testID}.lO;
+    fprintf('lO = %d\n', TestCases{testID}.lO);
+
+    toll = TestCases{testID}.toll;
+    fprintf('toll = %d\n', TestCases{testID}.toll);
+
+    J = diag(lambda);
+    for i = 2:length(lambda)
+        if J(i,i) == J(i-1,i-1)
+            J(i-1,i) = 1;
+        end
+    end
+    
+    n = length(lambda);
+    Q = orth(randn(n));
+    A = Q' * J * Q;
+    A1 = A;
+    disp(J);
+    it = 3;
+    maxit = 5;
+    
+    [l, m, flag] = multialg(A, lO, toll, it, maxit);
+    
+    if flag == 1
+        fprintf('Newton convergente.\nAutovalore calcolato: %f\nMolteplicità 
+         algebrica stimata: %d\n', l, m);
+        l1 = round(l);
+        toll = 1e-6;
+        k = multigeo(A1, l1, toll);
+        fprintf('Molteplicità geometrica di %f: %d\n', l1, k);
+
+    else
+        fprintf('Metodo non convergente.\nUltimo autovalore calcolato:
+         %f\nMolteplicità algebrica stimata: %d\n', l, m);
+    end
+    
+    linea = 50;
+    fprintf('%s\n', repmat('-', 1, linea));
+end
     \end{verbatim}
-    \subsubsection{Test 2 Matrice clusterizzata con valori molto vicini}
+    \subsubsection{Terminal output}
     \begin{verbatim}
-        %% Test 1 clusterizzata con valori molto vicini
-        lambda =[1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003];
-        lO = 10.1;
-        toll = 1e-9; %il metodo converge
+        Eseguendo Test 1...
+[1 1 1 1 1 4 4 4 4 4 4 4 ]
+lO = 3.800000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0     0     0     0
+     0     0     1     1     0     0     0     0     0     0     0     0
+     0     0     0     1     1     0     0     0     0     0     0     0
+     0     0     0     0     1     0     0     0     0     0     0     0
+     0     0     0     0     0     4     1     0     0     0     0     0
+     0     0     0     0     0     0     4     1     0     0     0     0
+     0     0     0     0     0     0     0     4     1     0     0     0
+     0     0     0     0     0     0     0     0     4     1     0     0
+     0     0     0     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     0     0     0     4
 
-        %% Test 2 con la stessa matrice cambio solo il punto iniziale
-        lO= 1.0125;
-        %In questo caso il metodo di Newton non converge
-    \end{verbatim}
-    \subsubsection{Test 3 Matrice con molteplicità bassa (1-2)}
-    \begin{verbatim}
-        %% Prendiamo una matrice di esempio: lambda = [1,1,1,4,5,6];
-        % Ad ogni iterazione del test proveremo ad aumentare la molteplicità
-        % aggiungendo un autovalore (ad esempio 4) a lambda
-        %Definiamo
-        lO = 3.9;
-        toll = 1e-5;
-        %% Test 1 molteplicità 1
-        lambda = [1,1,1,4,5,6]; %il metodo converge per lO = 3.9
-        %% Proviamo quindi ad diminuire lO portandolo a 3.5
-        lO = 3.5; %in questo caso la molteplicità algebrica è uguale a 0
-                    % e il metodo non converge;
+Newton convergente.
+Autovalore calcolato: 3.992975
+Molteplicità algebrica stimata: 10
+Molteplicità geometrica di 4.000000: 1
+--------------------------------------------------
 
-        %% Test 2 molteplicità 2
-        lambda = [1,1,1,4,5,6,4]; %il metodo converge per lO = 3.9
-        %% Proviamo quindi ad diminuire lO portandolo a 3.5
-        lO = 3.5; %in questo caso la molteplicità algebrica è uguale a 1
-                    % e il metodo non converge;
-    \end{verbatim}
-    \subsubsection{Test 4 Matrice con molteplicità alta (3-7)}
-    \begin{verbatim}
-        %% Effettuiamo un test simile al precedente prendendo come base
-        lambda = [1,1,1,4,5,6,4,4];
-        toll = 1e-5;
-        %% Test 1 molteplicità 3
-        lO = 3.5; % Il metodo converge ma la molteplicità algebrica è 2
-        % Riduciamo la tolleranza toll = 1e-9 e lO = 3.7
-        lO = 3.7;
-        toll = 1e-9; %Il metodo converge e la molteplicità algebrica è 3
-        
+Eseguendo Test 2...
+[1 1.01 1.02 5 5.01 5.02 10 10.001 10.002 10.003 ]
+lO = 1.010000e+01
+toll = 1.000000e-04
+  Columns 1 through 7
 
+    1.0000         0         0         0         0         0         0
+         0    1.0100         0         0         0         0         0
+         0         0    1.0200         0         0         0         0
+         0         0         0    5.0000         0         0         0
+         0         0         0         0    5.0100         0         0
+         0         0         0         0         0    5.0200         0
+         0         0         0         0         0         0   10.0000
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
 
-        %% Test 2 molteplicità 4
-        % resettiamo i valori di base e aggiungiamo un autovalore (4)
-        % alla fine di lambda
-        lambda = [1,1,1,4,5,6,4,4,4];
-        lO = 3.5; % Il metodo converge ma la molteplicità algebrica è 3
-                    % da qui quindi senza modificare la tollerenza
-        % Aumentiamo il punto di partenza
-        lO = 3.7; % Il metodo converge e la molteplicità algebrica è 4
+  Columns 8 through 10
 
-        %% Test 3 molteplicità 5
-        % aggiungiamo un autovalore (4) alla fine di lambda e partiamo
-        % da lO = 3.7
-        lambda = [1,1,1,4,5,6,4,4,4,4];
-        lO = 3.7; % Il metodo converge e la molteplicità algebrica è 5
-        % Abbassiamo il punto di partenza a 3.5
-        lO = 3.5; % Il metodo converge e la molteplicità trovata è giusta
-        % Abbassiamo il punto di partenza a 3.3
-        lO = 3.3; % Il metodo converge ma la molteplicità trovata è 4
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+   10.0010         0         0
+         0   10.0020         0
+         0         0   10.0030
 
-        %% Test 4 molteplicità 6
-        % aggiungiamo un autovalore (4) alla fine di lambda
-        lambda = [1,1,1,4,5,6,4,4,4,4,4];
-        lO = 3.7; % Il metodo converge e la molteplicità algebrica è 6
-        % Abbassiamo il punto di partenza a 3.6
-        lO = 3.6; % Il metodo converge e la molteplicità algebrica è 6
-        % Abbassiamo il punto di partenza a 3.53
-        lO = 3.51; % Anche in questo caso converge e la molteplicità algebrica è 6
-        % Riportiamo l0 a 3.5
-        lO = 3.5; % Il metodo converge e la molteplicità trovata è giusta
-        % Abbassiamo il punto di partenza a 3.4
-        lO = 3.4; % Il metodo converge ma la molteplicità trovata è 5
-        
-        %% Test 5 molteplicità 7
-        % aggiungiamo un autovalore (4) alla fine di lambda
-        lambda = [1,1,1,4,5,6,4,4,4,4,4,4];
-        lO = 3.5; % Il metodo converge e la molteplicità algebrica è 7
+Newton convergente.
+Autovalore calcolato: 10.003000
+Molteplicità algebrica stimata: 7
+Molteplicità geometrica di 10.000000: 1
+--------------------------------------------------
+
+Eseguendo Test 3...
+[1 1.01 1.02 5 5.01 5.02 10 10.001 10.002 10.003 ]
+lO = 1.012500e+00
+toll = 1.000000e-04
+  Columns 1 through 7
+
+    1.0000         0         0         0         0         0         0
+         0    1.0100         0         0         0         0         0
+         0         0    1.0200         0         0         0         0
+         0         0         0    5.0000         0         0         0
+         0         0         0         0    5.0100         0         0
+         0         0         0         0         0    5.0200         0
+         0         0         0         0         0         0   10.0000
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0
+
+  Columns 8 through 10
+
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+   10.0010         0         0
+         0   10.0020         0
+         0         0   10.0030
+
+Newton convergente.
+Autovalore calcolato: 1.010001
+Molteplicità algebrica stimata: 1
+Molteplicità geometrica di 1.000000: 1
+--------------------------------------------------
+
+Eseguendo Test 4...
+[1 1 1 4 5 6 ]
+lO = 3.500000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0
+     0     1     1     0     0     0
+     0     0     1     0     0     0
+     0     0     0     4     0     0
+     0     0     0     0     5     0
+     0     0     0     0     0     6
+
+Newton convergente.
+Autovalore calcolato: 4.000000
+Molteplicità algebrica stimata: 1
+Molteplicità geometrica di 4.000000: 1
+--------------------------------------------------
+
+Eseguendo Test 5...
+[1 1 1 4 5 6 ]
+lO = 3.900000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0
+     0     1     1     0     0     0
+     0     0     1     0     0     0
+     0     0     0     4     0     0
+     0     0     0     0     5     0
+     0     0     0     0     0     6
+
+Newton convergente.
+Autovalore calcolato: 4.000000
+Molteplicità algebrica stimata: 1
+Molteplicità geometrica di 4.000000: 1
+--------------------------------------------------
+
+Eseguendo Test 6...
+[1 1 1 4 5 6 4 ]
+lO = 3.900000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0
+     0     1     1     0     0     0     0
+     0     0     1     0     0     0     0
+     0     0     0     4     0     0     0
+     0     0     0     0     5     0     0
+     0     0     0     0     0     6     0
+     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.999949
+Molteplicità algebrica stimata: 4
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 7...
+[1 1 1 4 5 6 4 4 ]
+lO = 3.500000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0
+     0     0     1     0     0     0     0     0
+     0     0     0     4     0     0     0     0
+     0     0     0     0     5     0     0     0
+     0     0     0     0     0     6     0     0
+     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.999653
+Molteplicità algebrica stimata: 6
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 8...
+[1 1 1 4 5 6 4 4 4 ]
+lO = 3.700000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0
+     0     0     0     0     0     6     0     0     0
+     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.999268
+Molteplicità algebrica stimata: 8
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 9...
+[1 1 1 4 5 6 4 4 4 4 ]
+lO = 3.300000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0     0
+     0     0     0     0     0     6     0     0     0     0
+     0     0     0     0     0     0     4     1     0     0
+     0     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.998646
+Molteplicità algebrica stimata: 10
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 10...
+[1 1 1 4 5 6 4 4 4 ]
+lO = 3.700000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0
+     0     0     0     0     0     6     0     0     0
+     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.999268
+Molteplicità algebrica stimata: 8
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 11...
+[1 1 1 4 5 6 4 4 4 4 ]
+lO = 3.500000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0     0
+     0     0     0     0     0     6     0     0     0     0
+     0     0     0     0     0     0     4     1     0     0
+     0     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.998464
+Molteplicità algebrica stimata: 10
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 12...
+[1 1 1 4 5 6 4 4 4 4 4 ]
+lO = 4.300000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0     0     0
+     0     0     0     0     0     6     0     0     0     0     0
+     0     0     0     0     0     0     4     1     0     0     0
+     0     0     0     0     0     0     0     4     1     0     0
+     0     0     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 4.002088
+Molteplicità algebrica stimata: 10
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 13...
+[1 1 1 4 5 6 4 4 4 4 4 ]
+lO = 3.500000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0     0     0
+     0     0     0     0     0     6     0     0     0     0     0
+     0     0     0     0     0     0     4     1     0     0     0
+     0     0     0     0     0     0     0     4     1     0     0
+     0     0     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.997853
+Molteplicità algebrica stimata: 11
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 14...
+[1 1 1 4 5 6 4 4 4 4 4 4 ]
+lO = 3.400000e+00
+toll = 1.000000e-04
+     1     1     0     0     0     0     0     0     0     0     0     0
+     0     1     1     0     0     0     0     0     0     0     0     0
+     0     0     1     0     0     0     0     0     0     0     0     0
+     0     0     0     4     0     0     0     0     0     0     0     0
+     0     0     0     0     5     0     0     0     0     0     0     0
+     0     0     0     0     0     6     0     0     0     0     0     0
+     0     0     0     0     0     0     4     1     0     0     0     0
+     0     0     0     0     0     0     0     4     1     0     0     0
+     0     0     0     0     0     0     0     0     4     1     0     0
+     0     0     0     0     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     0     0     0     0     4
+
+Newton convergente.
+Autovalore calcolato: 3.997260
+Molteplicità algebrica stimata: 14
+Molteplicità geometrica di 4.000000: 2
+--------------------------------------------------
+
+Eseguendo Test 15...
+[4 4 4 4 4 4 4 4 ]
+lO = 0
+toll = 1.000000e-04
+     4     1     0     0     0     0     0     0
+     0     4     1     0     0     0     0     0
+     0     0     4     1     0     0     0     0
+     0     0     0     4     1     0     0     0
+     0     0     0     0     4     1     0     0
+     0     0     0     0     0     4     1     0
+     0     0     0     0     0     0     4     1
+     0     0     0     0     0     0     0     4
+
+Metodo non convergente.
+Ultimo autovalore calcolato: 3.985089
+Molteplicità algebrica stimata: 17
+--------------------------------------------------
     \end{verbatim}
     \newpage
     \section{Conclusioni}
