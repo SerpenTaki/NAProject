@@ -24,98 +24,127 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
     
     % Inizializzazione
     z = lO;
+    flag = 0;
     iter_values = [];
     steps = []; % vettore per memorizzare tutti gli step di Newton
     
     % --- Fase 1: Newton classico ---
     % Forza un numero minimo di iterazioni (almeno 10) prima di verificare il criterio
-    min_iter = min(10, it);
     for i = 1:it
         [f, g] = myobjective(z, A);  % qui g = f(z)/f'(z)
         iter_values = [iter_values, z];
-        
-        % Calcolo del passo di Newton; in questo esempio usiamo g direttamente
-        s = g;                    
-        %steps = [steps, s];        % Memorizza lo step corrente
-        
-        % Aggiornamento delle variabili per gli ultimi due step
-        if i == 1
-            last_step = s;
-        else
-            penultimate_step = last_step;
-            last_step = s;
-        end
-        
-        if (i >= min_iter) && (abs(f) < toll)
+
+        if abs(f) < toll
             % Se il criterio di arresto è soddisfatto, usciamo: la radice è considerata semplice.
             l = z;
             m = 1;
             flag = 1;
-            testGrafico(iter_values);
+            testGrafico(iter_values,A);
             return;
         end
+
+        if i == 1
+            last_step = g;
+        else
+            penultimate_step = last_step;
+            last_step = g;
+        end
+
         % Aggiornamento di Newton: z = z - s
-        z = z - s;
+        z = z  + g;
     end
     
     % Al termine del ciclo, le variabili 'penultimate_step' e 'last_step'
     % contengono rispettivamente il penultimo e l'ultimo passo calcolato.
-    fprintf('Penultimo step: %e\n', penultimate_step);
-    fprintf('Ultimo step: %e\n', last_step);
+    %fprintf('Penultimo step: %e\n', penultimate_step);
+    %fprintf('Ultimo step: %e\n', last_step);
     m = abs(penultimate_step / (penultimate_step - last_step));
     m = round(m);
     l=z;
     flag=0;
     
-    % Stima di m tramite Newton (risolviamo (1-1/m)^m = ratio)
-    
     % --- Punto 3: Newton modificato ---
     totalCalls = 0;
-    %converged = false;
+    z = lO;
     % Iniziamo con il valore m stimato e ripartiamo da lO
-    m_modified = m;
-    while totalCalls < 10 * maxit
-        z = lO;
-      % riparto da lO per ogni nuovo tentativo con m_modified
+    newMax = 10 * maxit;
+    last_step = inf;
+    penultimate_step = inf;
+    while totalCalls < newMax
+        %fprintf("\nTOTAL CALLS ->%f\n",totalCalls);
         for j = 1:maxit
-            [f, g] = myobjective(z, A);
-            totalCalls = totalCalls + 1;
-            iter_values = [iter_values, z];
-            s = m_modified * g;  % passo modificato
-            steps = [steps, s];
-            if j>=2 && j<maxit-1
-                a = steps(j-1);
-                b = steps(j);
-                if abs(a)-abs(b) < toll
-                    converged = true;
-                    flag=1;
-                    l = z;
-                    m = m_modified;
-                    testGrafico(iter_values);
-                    return;
-                end
+
+            if(totalCalls > newMax-1)
+                break;
             end
             
-            z = z - s;
-            if s == 0;
-                testGrafico(iter_values);
+            [f, g] = myobjective(z, A);
+            z = z + g;
+            s = g;
+            totalCalls = totalCalls + 1;
+            iter_values = [iter_values, z];
+            steps = [steps, s];
+
+            penultimate_step = last_step;
+            last_step = g;
+            diffe = norm(last_step - penultimate_step);
+            
+            if diffe < toll
+                flag=1;
+                l = z;
+                testGrafico(iter_values,A);
+                %fprintf("Ultimo->%f\npenultimo->%f\ndiff->%f\n",last_step,penultimate_step,diffe);
                 return;
             end
+
+        end   
+            
+        if s == 0
+            testGrafico(iter_values,A);
+            return;
         end
         % Se non converge entro maxit passi con l'attuale m, incrementa m di 1 e ripeti.
-        m_modified = m_modified + 1;
-    
-        totalCalls
+
+        g = m * g;
+        m = m+1;
+        totalCalls = totalCalls + 1;
     end
-      testGrafico(iter_values);
+    flag = 0;
+    l = z;
+    testGrafico(iter_values,A);
     end
     
-    function [] = testGrafico(values)
-        figure;
-        semilogy(1:length(values), values, "-o", "LineWidth", 1.5, "MarkerSize", 6);
-        xlabel("Numero di Iterazioni");
-        ylabel("Valore di z");
-        title("Convergenza del Metodo di Newton");
-        grid on;
+function [] = testGrafico(values, A)
+   
+    figure;
+    semilogy(1:length(values), values, '-o', 'LineWidth', 1.5, 'MarkerSize', 6);
+    xlabel('Numero di Iterazioni');
+    ylabel('Valore di z');
+    title('Convergenza del Metodo di Newton');
+    grid on;
+   
+    figure;
+
+    p = poly(A);
+
+    z_min = min(values) - 1;
+    z_max = max(values) + 1;
+
+    fplot(@(z) polyval(p, z), [z_min, z_max], 'r', 'LineWidth', 2);
+    xlabel('z');
+    ylabel('Valore del polinomio');
+    title('Polinomio Caratteristico di A');
+    grid on;
+    hold on;
+
+    zeri = roots(p);
+
+    zeri_real = zeri(imag(zeri) == 0);
+
+    plot(zeri_real, zeros(size(zeri_real)), 'bo', 'MarkerSize', 8, 'MarkerFaceColor', 'b');
     
-    end
+    legend('Polinomio', 'Zeri');
+    hold off;
+end
+
+

@@ -18,6 +18,7 @@ function [f, g] = myobjective(z, A)
 
     s = sum(P_vec ~= 1:n); % Conta il numero di scambi necessari nella permutazione.
     det_P = (-1)^s; % Calcola il determinante della matrice di permutazione.
+    det_P = det(P);
     det_B = det_P * prod(diag(U)); % Calcola il determinante di B.
 
     f = det_B; % Assegna il determinante di B a f.

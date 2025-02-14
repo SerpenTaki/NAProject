@@ -26,8 +26,8 @@ lO = input('Inserisci il valore iniziale lO (es. 3.53): ');  % inizialmente vici
 
 % Parametri per il metodo
 toll = input('Inserisci il valore di tolleranza toll (es. 1e-5): ');
-it = 2;
-maxit = 15;
+it = 6;
+maxit = 9;
 
 % Chiamata al metodo multialg che restituisce anche il vettore degli step
 [l, m, flag] = multialg(A, lO, toll, it, maxit);
@@ -45,7 +45,4 @@ fprintf('\nTutti i passi di Newton (s_k):\n');
 
 l1 = round(l);
 k = multigeo(A, l1, toll);
-fprintf('Molteplicità geometrica di %f: %d\n\n', l1, k);
-
-linea = 50; % Lunghezza della linea
-fprintf('%s\n', repmat('-', 1, linea));
+fprintf('Molteplicità geometrica di %f: %d\n', l1, k);
