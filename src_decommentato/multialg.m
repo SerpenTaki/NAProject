@@ -54,16 +54,19 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
             if(totalCalls > newMax-1)
                 break;
             end
-            [f, g] = myobjective(z, A);
-            z = z + g;
+            g = m * g;
             s = g;
+            z = z + s;
+            [f, g] = myobjective(z, A);
+  
+            
             totalCalls = totalCalls + 1;
             iter_values = [iter_values, z];
             steps = [steps, s];
             penultimate_step = last_step;
             last_step = g;
-            diffe = norm(last_step - penultimate_step);
-            if diffe < toll
+            diffe = abs(last_step - penultimate_step);
+            if abs(g) < toll
                 flag=1;
                 l = z;
                 testGrafico(iter_values,A);
@@ -76,7 +79,6 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
             testGrafico(iter_values,A);
             return;
         end
-        g = m * g;
         m = m+1;
         totalCalls = totalCalls + 1;
     end
