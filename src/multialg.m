@@ -118,9 +118,9 @@ function [] = testGrafico(values, A)
    
     figure;
     semilogy(1:length(values), values, '-o', 'LineWidth', 1.5, 'MarkerSize', 6);
-    xlabel('Numero di Iterazioni');
-    ylabel('Valore di z');
-    title('Convergenza del Metodo di Newton');
+    xlabel('Number of Iterations');
+    ylabel('Value of z');
+    title('Convergence of Newton Method');
     grid on;
    
     figure;
@@ -132,8 +132,8 @@ function [] = testGrafico(values, A)
 
     fplot(@(z) polyval(p, z), [z_min, z_max], 'r', 'LineWidth', 2);
     xlabel('z');
-    ylabel('Valore del polinomio');
-    title('Polinomio Caratteristico di A');
+    ylabel('Value of the polynomial');
+    title('Characteristic Polynomial of A');
     grid on;
     hold on;
 
@@ -143,7 +143,7 @@ function [] = testGrafico(values, A)
 
     plot(zeri_real, zeros(size(zeri_real)), 'bo', 'MarkerSize', 8, 'MarkerFaceColor', 'b');
     
-    legend('Polinomio', 'Zeri');
+    legend('Polynomial', 'Zeros');
     hold off;
 end
 
