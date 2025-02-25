@@ -21,36 +21,30 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
     steps = []; 
     
     for i = 1:it
-
         [f, g] = myobjective(z, A); 
         iter_values = [iter_values, z];
-        
         if abs(g) < toll
-
             l = z;
             m = 1;
             flag = 1;
             testGrafico(iter_values,A);
             return;
-
         end
-
         if i == 1
             last_step = g;
         else
             penultimate_step = last_step;
             last_step = g;
         end
-
-        z = z - g;
-
+        z = z  + g;
     end
     
+    
     fprintf("last->%f\npenu->%f",last_step,penultimate_step);
-    m = 1/(1-(abs(penultimate_step) / abs(last_step)));
+    m = abs(1/(1-(abs(penultimate_step) / abs(last_step))));
    %m = (m-1)/m;
    % m = floor(m);
-    fprintf("m-> %f/n",m);
+    fprintf("m-> %f\n",m);
     l=z;
     flag=0;
     
@@ -59,18 +53,19 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
     last_step = inf;
     it = 0;
     
-    while it < 10
+  
        
-        for j = 1:maxit
+    for j = 1:maxit
             g = m * g;
             z = z + g;
             [f, g] = myobjective(z, A);
+            
             s = g;
             iter_values = [iter_values, z];
             steps = [steps, s];
             penultimate_step = last_step;
             last_step = g;
-            diffe = norm(last_step - penultimate_step);
+            diffe = abs(last_step - penultimate_step);
 
             if abs(g) < toll
                 flag=1;
@@ -79,20 +74,37 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
                 return;
             end
 
-        end   
+     end   
             
-        if s == 0
+    if s == 0
+        testGrafico(iter_values,A);
+        return;
+    end
+    for j = 1:maxit*10
+        m = m+1;
+        g = m * g;
+        z = z + g;
+        [f, g] = myobjective(z, A);
+            
+        s = g;
+        iter_values = [iter_values, z];
+        steps = [steps, s];
+        penultimate_step = last_step;
+        last_step = g;
+        diffe = norm(last_step - penultimate_step);
+
+        if diffe < toll
+            flag=1;
+            l = z;
             testGrafico(iter_values,A);
             return;
         end
-        it = it +1;
-        m = m+1;
-        
     end
+    
     flag = 0;
     l = z;
     testGrafico(iter_values,A);
-    end
+end
     
 function [] = testGrafico(values, A)
    

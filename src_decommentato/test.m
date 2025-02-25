@@ -4,20 +4,20 @@ close all;
     
 TestCases = {
     struct('lambda', [1,1,1,1,1,4,4,4,4,4,4,4], 'lO', 3.8, 'toll', 1e-4),%1
-    struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 10.1, 'toll', 1e-4),%2
-    struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 1.0125, 'toll', 1e-4),%3
-    struct('lambda', [1,1,1,4,5,6], 'lO', 3.5, 'toll', 1e-4),%4 
-    struct('lambda', [1,1,1,4,5,6], 'lO', 3.9, 'toll', 1e-4),%5
-    struct('lambda', [1,1,1,4,5,6,4], 'lO', 3.9, 'toll', 1e-4),%6
-    struct('lambda', [1,1,1,4,5,6,4,4], 'lO', 3.5, 'toll', 1e-4),%7
-    struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%8 
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.3, 'toll', 1e-4),%9 
-    struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%10
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.5, 'toll', 1e-4),%11
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 4.3, 'toll', 1e-4), %12
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-4), % 13
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-4), %14
-    struct('lambda', [4,4,4,4,4,4,4,4], 'lO', 0., 'toll', 1e-4), %15
+    %struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 10.1, 'toll', 1e-4),%2
+    %struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 1.0125, 'toll', 1e-4),%3
+    %struct('lambda', [1,1,1,4,5,6], 'lO', 3.5, 'toll', 1e-4),%4 
+    %struct('lambda', [1,1,1,4,5,6], 'lO', 3.9, 'toll', 1e-4),%5
+    %struct('lambda', [1,1,1,4,5,6,4], 'lO', 3.9, 'toll', 1e-4),%6
+    % struct('lambda', [1,1,1,4,5,6,4,4], 'lO', 3.5, 'toll', 1e-4),%7
+    % struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%8 
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.3, 'toll', 1e-4),%9 
+    % struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%10
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.5, 'toll', 1e-4),%11
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 4.3, 'toll', 1e-4), %12
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-4), % 13
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-4), %14
+    % struct('lambda', [4,4,4,4,4,4,4,4], 'lO', 0., 'toll', 1e-4), %15
 };
 
 for testID = 1:length(TestCases)
@@ -44,8 +44,8 @@ for testID = 1:length(TestCases)
     A = Q' * J * Q;
     A1 = A;
     disp(J);
-    it = 3;
-    maxit = 5;
+    it = 5;
+    maxit = 50;
     
     [l, m, flag] = multialg(A, lO, toll, it, maxit);
     
