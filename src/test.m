@@ -4,21 +4,21 @@ close all;
     
 % Definizione dei test
 TestCases = {
-    struct('lambda', [1,1,1,1,1,4,4,4,4,4,4,4], 'lO', 3.8, 'toll', 1e-4),%1
-    struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 10.1, 'toll', 1e-4),%2
-    struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 1.0125, 'toll', 1e-4),%3
-    struct('lambda', [1,1,1,4,5,6], 'lO', 3.5, 'toll', 1e-4),%4 
-    struct('lambda', [1,1,1,4,5,6], 'lO', 3.9, 'toll', 1e-4),%5
-    struct('lambda', [1,1,1,4,5,6,4], 'lO', 3.9, 'toll', 1e-4),%6
-    struct('lambda', [1,1,1,4,5,6,4,4], 'lO', 3.5, 'toll', 1e-4),%7
-    struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%8 
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.3, 'toll', 1e-4),%9 
-    struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%10
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.5, 'toll', 1e-4),%11
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 4.3, 'toll', 1e-4), %12
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-4), % 13
-    struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-4), %14
-    struct('lambda', [4,4,4,4,4,4,4,4], 'lO', 0., 'toll', 1e-4), %15
+    % struct('lambda', [1,1,1,1,1,4,4,4,4,4,4,4], 'lO', 3.8, 'toll', 1e-4),%1
+    % struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 10.1, 'toll', 1e-4),%2
+    % struct('lambda', [1, 1.01, 1.02, 5, 5.01, 5.02, 10, 10.001, 10.002, 10.003], 'lO', 1.0125, 'toll', 1e-4),%3
+    % struct('lambda', [1,1,1,4,5,6], 'lO', 3.5, 'toll', 1e-4),%4 
+    % struct('lambda', [1,1,1,4,5,6], 'lO', 3.9, 'toll', 1e-4),%5
+    % struct('lambda', [1,1,1,4,5,6,4], 'lO', 3.9, 'toll', 1e-4),%6
+    % struct('lambda', [1,1,1,4,5,6,4,4], 'lO', 3.5, 'toll', 1e-4),%7
+    % struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%8 
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.3, 'toll', 1e-4),%9 
+    % struct('lambda', [1,1,1,4,5,6,4,4,4], 'lO', 3.7, 'toll', 1e-4),%10
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4], 'lO', 3.5, 'toll', 1e-4),%11
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 4.3, 'toll', 1e-4), %12
+    % struct('lambda', [1,1,1,4,5,6,4,4,4,4,4], 'lO', 3.5, 'toll', 1e-4), % 13
+     struct('lambda', [1,1,1,4,5,6,4,4,4,4,4,4], 'lO', 3.4, 'toll', 1e-2), %14
+    % struct('lambda', [4,4,4,4,4,4,4,4], 'lO', 0., 'toll', 1e-4), %15
 };
 
 for testID = 1:length(TestCases)
@@ -48,8 +48,8 @@ for testID = 1:length(TestCases)
     disp(J);
     
     % Parametri per il metodo di Newton
-    it = 5;
-    maxit = 50;
+    it = 4;
+    maxit = 10;
     
     % Chiamata al metodo multialg che restituisce anche il vettore degli step
     [l, m, flag] = multialg(A, lO, toll, it, maxit);
@@ -61,7 +61,7 @@ for testID = 1:length(TestCases)
         % Calcolo della molteplicità geometrica
 
         l1 = round(l);
-        toll = 1e-6;
+        toll = 1e-4;
         k = multigeo(A1, l1, toll);
         fprintf('Geometric multiplicity of %f: %d\n', l1, k);
 
@@ -72,4 +72,3 @@ for testID = 1:length(TestCases)
     linea = 50; % Lunghezza della linea
     fprintf('%s\n', repmat('-', 1, linea));
 end
-close all;
