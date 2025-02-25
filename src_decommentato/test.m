@@ -45,7 +45,7 @@ for testID = 1:length(TestCases)
     A1 = A;
     disp(J);
     it = 5;
-    maxit = 6;
+    maxit = 15;
     
     [l, m, flag] = multialg(A, lO, toll, it, maxit);
     
@@ -63,3 +63,4 @@ for testID = 1:length(TestCases)
     linea = 50;
     fprintf('%s\n', repmat('-', 1, linea));
 end
+close all;
