@@ -66,7 +66,7 @@ for testID = 1:length(TestCases)
         fprintf('Geometric multiplicity of %f: %d\n', l1, k);
 
     else
-        fprintf('Non-convergent Method.\nULast calculated eigenvalue: %f\nEstimated algebraic multiplicity: %d\n', l, m);
+        fprintf('Non-convergent Method.\n');
     end
     
     linea = 50; % Lunghezza della linea

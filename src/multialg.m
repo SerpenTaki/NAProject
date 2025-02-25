@@ -26,74 +26,58 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
     z = lO;
     flag = 0;
     iter_values = [];
-    steps = []; % vettore per memorizzare tutti gli step di Newton
+    steps = []; 
     
-    % --- Fase 1: Newton classico ---
-    % Forza un numero minimo di iterazioni (almeno 10) prima di verificare il criterio
     for i = 1:it
-        [f, g] = myobjective(z, A);  % qui g = f(z)/f'(z)
+        [f, g] = myobjective(z, A); 
         iter_values = [iter_values, z];
-
         if abs(f) < toll
-            % Se il criterio di arresto è soddisfatto, usciamo: la radice è considerata semplice.
             l = z;
             m = 1;
             flag = 1;
             testGrafico(iter_values,A);
             return;
         end
-
         if i == 1
             last_step = g;
         else
             penultimate_step = last_step;
             last_step = g;
         end
-
-        % Aggiornamento di Newton: z = z - s
         z = z  + g;
     end
     
-    % Al termine del ciclo, le variabili 'penultimate_step' e 'last_step'
-    % contengono rispettivamente il penultimo e l'ultimo passo calcolato.
-    %fprintf('Penultimo step: %e\n', penultimate_step);
-    %fprintf('Ultimo step: %e\n', last_step);
     m = abs(penultimate_step / (penultimate_step - last_step));
     m = round(m);
     l=z;
     flag=0;
     
-    % --- Punto 3: Newton modificato ---
     totalCalls = 0;
     z = lO;
-    % Iniziamo con il valore m stimato e ripartiamo da lO
     newMax = 10 * maxit;
     last_step = inf;
     penultimate_step = inf;
     while totalCalls < newMax
-        %fprintf("\nTOTAL CALLS ->%f\n",totalCalls);
         for j = 1:maxit
-
             if(totalCalls > newMax-1)
                 break;
             end
-            
-            [f, g] = myobjective(z, A);
-            z = z + g;
+            g = m * g;
             s = g;
+            z = z + s;
+            [f, g] = myobjective(z, A);
+  
+            
             totalCalls = totalCalls + 1;
             iter_values = [iter_values, z];
             steps = [steps, s];
-
             penultimate_step = last_step;
             last_step = g;
-            diffe = norm(last_step - penultimate_step);
-            
-            if diffe < toll
+            diffe = abs(last_step - penultimate_step);
+            if abs(g) < toll
                 flag=1;
                 l = z;
                 testGrafico(iter_values,A);
-                %fprintf("Ultimo->%f\npenultimo->%f\ndiff->%f\n",last_step,penultimate_step,diffe);
                 return;
             end
 
@@ -103,17 +87,14 @@ function [l, m, flag] = multialg(A, lO, toll, it, maxit)
             testGrafico(iter_values,A);
             return;
         end
-        % Se non converge entro maxit passi con l'attuale m, incrementa m di 1 e ripeti.
-
-        g = m * g;
         m = m+1;
         totalCalls = totalCalls + 1;
     end
     flag = 0;
     l = z;
     testGrafico(iter_values,A);
-    end
-    
+end
+
 function [] = testGrafico(values, A)
    
     figure;
